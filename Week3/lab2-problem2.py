@@ -35,18 +35,20 @@ theta1 = tf.Variable(0.0, name='theta1')
 '''
 Step 4: Define a hypothesis function to predict Y
 '''
-hypothesis_function = # Write your code here !
+hypothesis_function = theta0 + theta1 * X
 
 '''
-Step 5: Use the square error as the loss function
+Step 5: Use the square error as the cost function
 '''
-loss_function = # Write your code here !
+cost_function = tf.multiply(tf.divide(1, 2), tf.reduce_mean(tf.pow(Y - hypothesis_function, 2)))
+
 # Also, write another line here for logging the value of loss function on TensorBoard
+tf.summary.scalar('total_cost', cost_function)
 
 '''
 Step 6: Using gradient descent with learning rate of 0.001 to minimize loss
 '''
-optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.001).minimize(loss_function)
+optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.001).minimize(cost_function)
 
 with tf.Session() as session:
     '''
@@ -54,14 +56,15 @@ with tf.Session() as session:
     '''
     session.run(tf.global_variables_initializer())
 
-    # Write your code here !
+    merged = tf.summary.merge_all()
     writer = tf.summary.FileWriter('./graphs/linear_regression', session.graph)
 
     '''
     Step 8: Train the model for 30,000 epochs
     '''
     for i in range(30000):
-        # Write your code here !
+        session.run(optimizer, feed_dict={X: data.T[0], Y: data.T[1]})
+        summary, cost = session.run([merged, cost_function], feed_dict={X: data.T[0], Y: data.T[1]})
 
         print("Epoch: {0}, cost = {1}, theta0 = {2}, theta1 = {3}".format(i + 1, cost,
                                                                           session.run(theta0), session.run(theta1)))
@@ -69,7 +72,9 @@ with tf.Session() as session:
     '''
     Step 9: Prints the training cost, theta0, and theta1
     '''
-    # Write your code here !
+    print("Optimization Finished!")
+    training_cost = session.run(cost_function, feed_dict={X: data.T[0], Y: data.T[1]})
+    print("Cost =", training_cost, "theta0 = ", session.run(theta0), "theta1 = ", session.run(theta1), '\n')
 
     '''
     Step 10: Plot the results
