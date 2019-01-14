@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import xlrd
 
 
-def gradient_descent(X, Y, alpha=0.01 , converge_criteria=0.0001, max_iteration=10000):
+def gradient_descent(X, Y, alpha=0.01 , converge_criteria=0.0001, max_epoch=10000):
     converged = False
     iteration = 0
 
@@ -15,23 +15,23 @@ def gradient_descent(X, Y, alpha=0.01 , converge_criteria=0.0001, max_iteration=
     theta1 = 0
 
     # Total error, J(theta)
-    J = # Write your code here
+    J = (1.0 / (2.0 * m)) * sum([ (theta0 + theta1 * X[i] - Y[i]) ** 2 for i in range(m)])
 
     while not converged:
         # For each training sample, compute the gradient
-        gradient0 = # Write your code here
-        gradient1 = # Write your code here
+        gradient0 = (1.0 / m) * sum([(theta0 + theta1 * X[i] - Y[i]) for i in range(m)])
+        gradient1 = (1.0 / m) * sum([(theta0 + theta1 * X[i] - Y[i]) * X[i] for i in range(m)])
 
         # Update the temporary thetas
-        tmp0 = # Write your code here
-        tmp1 = # Write your code here
+        tmp0 = theta0 - alpha * gradient0
+        tmp1 = theta1 - alpha * gradient1
 
         # Update thetas
-        theta0 = # Write your code here
-        theta1 = # Write your code here
+        theta0 = tmp0
+        theta1 = tmp1
 
         # Mean squared error
-        error = # Write your code here
+        error = (1.0 / (2.0 * m)) * sum([(theta0 + theta1 * X[i] - Y[i]) ** 2 for i in range(m)])
 
         print("Iteration = {0}, Cost = {1}".format(iteration, error.item(0)))
 
@@ -42,7 +42,7 @@ def gradient_descent(X, Y, alpha=0.01 , converge_criteria=0.0001, max_iteration=
         J = error  # Update error
         iteration += 1  # Update iteration
 
-        if iteration == max_iteration:
+        if iteration == max_epoch:
             print('Max interactions exceeded!')
             converged = True
 
@@ -64,9 +64,9 @@ number_of_samples = number_of_rows - 1
 '''
 Step 2: Compute the gradients
 '''
-X, Y = # Write your code here
+X, Y = np.matrix(data.T[0]).T, np.matrix(data.T[1]).T
 
-theta0, theta1 = # Call gradient_descent method with alpha = 0.001, converge_criteria=0.000001, and max_iteration=30000
+theta0, theta1 = gradient_descent(X, Y, alpha=0.001, converge_criteria=0.0000001, max_epoch=300000)
 
 print("theta0 = {0}, theta1 = {1}".format(theta0, theta1))
 
